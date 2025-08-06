@@ -1,35 +1,27 @@
-🛠 ECAN-U01 CAN Logger (PySide6)
-Este é um aplicativo gráfico desenvolvido em Python com PySide6 (Qt for Python) para comunicação e monitoramento de mensagens CAN via dispositivo ECAN-U01.
+## 🛠 ECAN-U01 CAN Logger (PySide6)
 
-✨ Funcionalidades
-Detecção automática de portas seriais
+This is a graphical application built with **Python** and **PySide6 (Qt for Python)** to communicate with and monitor CAN messages using the **ECAN-U01** device.
 
-Abertura e controle de canais CAN1 e CAN2
+### ✨ Features
 
-Suporte a taxas de 125, 250 e 500 kbps
+- Automatic detection of available serial ports
+- Open/close control for **CAN1** and **CAN2** channels
+- Supports 125, 250, and 500 kbps bitrates
+- Send **Standard** and **Extended** CAN frames with automatic zero-padding
+- Real-time display of incoming messages
+- Group and count repeated messages
+- Export full logs and grouped data to **Excel (.xlsx)**
+- Clean, user-friendly interface with **copy-paste** support from the table
 
-Envio de mensagens Standard e Extended com preenchimento automático de dados
+### 🚀 Requirements
 
-Visualização em tempo real das mensagens recebidas
+- Python 3.9+
+- PySide6
+- pandas
+- pyserial
 
-Agrupamento e contagem de mensagens semelhantes
+### 📦 Installation
 
-Exportação de logs e agrupamentos em formato Excel (.xlsx)
-
-Interface amigável com suporte a cópia de dados da tabela
-
-🚀 Requisitos
-
-Python 3.9+
-
-PySide6
-
-pandas
-
-pyserial
-
-📦 Instalação
-
-pip install -r requirements.txt
-
+```bash
 python can_logger.py
+```
