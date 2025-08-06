@@ -161,6 +161,7 @@ class ECANGui(QWidget):
         layout.addWidget(self.table)
         self.table.setColumnWidth(4, 250) 
         self.table.setColumnWidth(5, 200) 
+        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         
         # Group and count button
         self.group_count_btn = QPushButton("Group and Count Messages")
@@ -280,26 +281,16 @@ class ECANGui(QWidget):
             if frame_type == "Extended":
                 length |= 0x80 
 
-            # Trata os dados digitados e remove espaços
             hex_str = ''.join(c for c in self.data_input.text().strip().upper() if c in "0123456789ABCDEF")
 
-            # Se número ímpar de caracteres, completa com 0 à direita (ex: '4' → '40')
             if len(hex_str) % 2 == 1:
                 hex_str += '0'
 
-            # Converte em lista de inteiros (bytes)
             data_bytes = [int(hex_str[i:i+2], 16) for i in range(0, min(len(hex_str), length * 2), 2)]
-
-            # Preenche com 0x00 até alcançar o length desejado
             data_padded = data_bytes + [0x00] * (8 - len(data_bytes))
-
-            # Monta a mensagem
             payload = [0xf0, 0x05, ch, length] + list(frame_id_bytes) + data_padded + [0x78, 0x46, 0x23, 0x01]
-
-            # Envia
             self.serial_port.write(bytes(payload))
 
-            # Log dos dados realmente enviados (com padding)
             data_str_sent = " ".join(f"{b:02X}" for b in data_padded)
             self.log_message("TX", ch, f"0x{frame_id_val:X}", length, data_str_sent)
 
@@ -314,14 +305,13 @@ class ECANGui(QWidget):
                     if len(data) >= 13 and data[0] == 0xff:
                         frame_type = data[1]
 
-                        # Aceita apenas ff 04 ou ff 05 com sufixo correto
                         if frame_type == 0x04:
                             pass
                         elif frame_type == 0x05:
                             if not data.endswith(b'\x78\x46\x23'):
-                                continue  # Ignora ff 05 inválido
+                                continue  
                         else:
-                            continue  # Ignora outros tipos
+                            continue  
                         
                         ch = data[2]
                         if (ch == 1 and not self.can1_open) or (ch == 2 and not self.can2_open):
@@ -387,15 +377,14 @@ class ECANGui(QWidget):
 
         dialog_layout = QVBoxLayout()
 
-        # Tabela com dados agrupados
         table = QTableWidget(grouped_df.shape[0], grouped_df.shape[1])
         table.setHorizontalHeaderLabels(grouped_df.columns)
         for i, row in grouped_df.iterrows():
             for j, val in enumerate(row):
                 table.setItem(i, j, QTableWidgetItem(str(val)))
+        table.setColumnWidth(2, 250) 
         dialog_layout.addWidget(table)
 
-        # Botão de salvar
         save_button = QPushButton("Save to XLSX")
         save_button.clicked.connect(lambda: self.save_grouped_dataframe(grouped_df))
         dialog_layout.addWidget(save_button)
